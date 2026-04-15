@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // Import media
@@ -7,27 +7,63 @@ import suitExample from './Wedding Song/Men.png';
 import gownExample from './Wedding Song/Woman.png';
 
 function WeddingInvite() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  // Set to true by default so the UI shows "SOUND ON" immediately
+  const [isPlaying, setIsPlaying] = useState(true);
   const [rsvpStatus, setRsvpStatus] = useState('pending');
   const audioRef = useRef(null);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      // Attempt to play immediately on load
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Successfully started autoplay
+            setIsPlaying(true);
+          })
+          .catch((error) => {
+            /** * Browser blocked autoplay. 
+             * We keep isPlaying as true so the UI reflects the intent, 
+             * but the audio will actually start once the user interacts with the page.
+             */
+            console.log("Audio waiting for user interaction to unmute.");
+          });
+      }
+    }
+  }, []);
+
+  const handleRSVP = (e) => {
+    e.preventDefault();
+    setRsvpStatus('success');
+  };
+
   const theme = {
-    bg: '#0a0a0a',        // Deep Black
-    surface: '#141414',   // Dark Gray
-    accent: '#c5a059',    // Champagne Gold
+    bg: '#0a0a0a',        
+    surface: '#141414',   
+    accent: '#c5a059',    
     text: '#ffffff',
     textMuted: '#888888'
   };
 
   const toggleMusic = () => {
-    if (isPlaying) { audioRef.current.pause(); } 
-    else { audioRef.current.play(); }
-    setIsPlaying(!isPlaying);
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   const reveal = {
     hidden: { opacity: 0, clipPath: 'inset(100% 0 0 0)' },
-    visible: { opacity: 1, clipPath: 'inset(0% 0 0 0)', transition: { duration: 1, ease: [0.45, 0, 0.55, 1] } }
+    visible: { 
+      opacity: 1, 
+      clipPath: 'inset(0% 0 0 0)', 
+      transition: { duration: 1, ease: [0.45, 0, 0.55, 1] } 
+    }
   };
 
   return (
@@ -35,7 +71,19 @@ function WeddingInvite() {
       <audio ref={audioRef} src={weddingSong} loop />
 
       {/* Minimalist Audio Control */}
-      <div onClick={toggleMusic} style={{ position: 'fixed', top: '40px', right: '40px', zIndex: 100, cursor: 'pointer', letterSpacing: '2px', fontSize: '0.7rem', color: theme.accent }}>
+      <div 
+        onClick={toggleMusic} 
+        style={{ 
+          position: 'fixed', 
+          top: '40px', 
+          right: '40px', 
+          zIndex: 100, 
+          cursor: 'pointer', 
+          letterSpacing: '2px', 
+          fontSize: '0.7rem', 
+          color: theme.accent 
+        }}
+      >
         {isPlaying ? 'SOUND ON' : 'SOUND OFF'}
       </div>
 
@@ -57,7 +105,6 @@ function WeddingInvite() {
       {/* SECTION 2: THE ITINERARY (Locations) */}
       <section style={{ padding: '150px 0', borderTop: `1px solid ${theme.surface}` }}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {/* Ceremony Side */}
           <div style={{ flex: '1 1 50%', padding: '0 10%', borderRight: `1px solid ${theme.surface}` }}>
             <span style={{ color: theme.accent, fontSize: '0.8rem', letterSpacing: '4px' }}>01 / THE VOWS</span>
             <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: '4rem', margin: '40px 0' }}>San Agustin Church</h2>
@@ -65,7 +112,6 @@ function WeddingInvite() {
             <iframe title="Ceremony" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.123456789!2d120.9750!3d14.5889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca2300000001%3A0x6d97e2056345678!2sSan%20Agustin%20Church!5e0!3m2!1sen!2sph!4v1234567890" width="100%" height="400" style={{ border: 0, filter: 'grayscale(1) invert(1)' }} />
           </div>
 
-          {/* Reception Side */}
           <div style={{ flex: '1 1 50%', padding: '150px 10% 0 10%' }}>
             <span style={{ color: theme.accent, fontSize: '0.8rem', letterSpacing: '4px' }}>02 / THE PARTY</span>
             <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: '4rem', margin: '40px 0' }}>VERA Intramuros</h2>
@@ -75,91 +121,77 @@ function WeddingInvite() {
         </div>
       </section>
 
-      {/* SECTION 3: ATTIRE (Enhanced & Larger Layout) */}
-<section style={{ padding: '120px 5%', backgroundColor: theme.surface }}>
-  <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-    
-    {/* Header & Text at the Top */}
-    <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-      <h2 style={{ 
-        fontFamily: "'KugileDemo', serif", 
-        fontSize: 'clamp(3.5rem, 8vw, 6rem)', // Significantly larger header
-        color: theme.accent, 
-        marginBottom: '25px' 
-      }}>
-        Dress Code
-      </h2>
-      <p style={{ fontSize: '1rem', letterSpacing: '6px', color: theme.accent, marginBottom: '20px', textTransform: 'uppercase' }}>
-        STRICTLY BLACK TIE
-      </p>
-      <h3 style={{ fontSize: '2rem', fontWeight: '300', marginBottom: '20px', maxWidth: '900px', margin: '0 auto 20px auto', lineHeight: '1.4' }}>
-        Gentlemen in Tuxedos. Ladies in Floor-Length Gowns.
-      </h3>
-      <p style={{ color: theme.textMuted, fontSize: '1.1rem', letterSpacing: '1px' }}>
-        We kindly request our guests to adhere to a formal black palette to maintain the evening's aesthetic.
-      </p>
-    </div>
+      {/* SECTION 3: ATTIRE */}
+      <section style={{ padding: '120px 5%', backgroundColor: theme.surface }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: 'clamp(3.5rem, 8vw, 6rem)', color: theme.accent, marginBottom: '25px' }}>
+              Dress Code
+            </h2>
+            <p style={{ fontSize: '1rem', letterSpacing: '6px', color: theme.accent, marginBottom: '20px', textTransform: 'uppercase' }}>
+              STRICTLY BLACK TIE
+            </p>
+            <h3 style={{ fontSize: '2rem', fontWeight: '300', marginBottom: '20px', maxWidth: '900px', margin: '0 auto 20px auto', lineHeight: '1.4' }}>
+              Gentlemen in Tuxedos. Ladies in Floor-Length Gowns.
+            </h3>
+            <p style={{ color: theme.textMuted, fontSize: '1.1rem', letterSpacing: '1px' }}>
+              We kindly request our guests to adhere to a formal black palette to maintain the evening's aesthetic.
+            </p>
+          </div>
 
-    {/* Enlarged Two-Column Images */}
-    <div style={{ display: 'flex', gap: '60px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-      
-      {/* Gentlemen Column */}
-      <div style={{ flex: '1', minWidth: '400px', textAlign: 'center' }}>
-        <div style={{ overflow: 'hidden', marginBottom: '30px' }}>
-          <img 
-            src={suitExample} 
-            alt="Gentlemen" 
-            style={{ 
-              width: '100%', 
-              height: 'auto', 
-              maxWidth: '550px', // Increased from 450px
-              filter: 'grayscale(1)', 
-              mixBlendMode: 'screen',
-              transition: 'transform 0.5s ease'
-            }} 
-          />
-        </div>
-        <p style={{ letterSpacing: '4px', fontSize: '0.9rem', color: theme.accent, fontWeight: 'bold' }}>GENTLEMEN</p>
-      </div>
-      
-      {/* Ladies Column */}
-      <div style={{ flex: '1', minWidth: '400px', textAlign: 'center' }}>
-        <div style={{ overflow: 'hidden', marginBottom: '30px' }}>
-          <img 
-            src={gownExample} 
-            alt="Ladies" 
-            style={{ 
-              width: '100%', 
-              height: 'auto', 
-              maxWidth: '550px', // Increased from 450px
-              filter: 'grayscale(1)', 
-              mixBlendMode: 'screen'
-            }} 
-          />
-        </div>
-        <p style={{ letterSpacing: '4px', fontSize: '0.9rem', color: theme.accent, fontWeight: 'bold' }}>LADIES</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-      {/* SECTION 4: RSVP (Full Screen) */}
-      <section style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: '800px', textAlign: 'center' }}>
-           <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: '5rem', marginBottom: '20px' }}>RSVP</h2>
-           <p style={{ letterSpacing: '5px', marginBottom: '60px' }}>UNTIL OCTOBER 01 . 2026</p>
-           
-           <form style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-              <input placeholder="YOUR NAME" style={{ background: 'none', border: 'none', borderBottom: `1px solid ${theme.accent}`, color: '#fff', padding: '20px', textAlign: 'center', fontSize: '1.2rem', outline: 'none' }} />
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '50px' }}>
-                 <label style={{ cursor: 'pointer' }}><input type="radio" name="att" /> ATTENDING</label>
-                 <label style={{ cursor: 'pointer' }}><input type="radio" name="att" /> DECLINING</label>
+          <div style={{ display: 'flex', gap: '60px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+            <div style={{ flex: '1', minWidth: '400px', textAlign: 'center' }}>
+              <div style={{ overflow: 'hidden', marginBottom: '30px' }}>
+                <img src={suitExample} alt="Gentlemen" style={{ width: '100%', height: 'auto', maxWidth: '550px', filter: 'grayscale(1)', mixBlendMode: 'screen' }} />
               </div>
-              <button style={{ background: 'none', border: `1px solid ${theme.accent}`, color: theme.accent, padding: '20px 60px', alignSelf: 'center', cursor: 'pointer', letterSpacing: '3px' }}>
-                SUBMIT RESPONSE
+              <p style={{ letterSpacing: '4px', fontSize: '0.9rem', color: theme.accent, fontWeight: 'bold' }}>GENTLEMEN</p>
+            </div>
+            
+            <div style={{ flex: '1', minWidth: '400px', textAlign: 'center' }}>
+              <div style={{ overflow: 'hidden', marginBottom: '30px' }}>
+                <img src={gownExample} alt="Ladies" style={{ width: '100%', height: 'auto', maxWidth: '550px', filter: 'grayscale(1)', mixBlendMode: 'screen' }} />
+              </div>
+              <p style={{ letterSpacing: '4px', fontSize: '0.9rem', color: theme.accent, fontWeight: 'bold' }}>LADIES</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4: RSVP */}
+      <section style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '800px', textAlign: 'center', padding: '0 20px' }}>
+          {rsvpStatus === 'pending' ? (
+            <>
+              <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: 'clamp(3rem, 10vw, 5rem)', marginBottom: '20px', color: theme.text }}>RSVP</h2>
+              <p style={{ letterSpacing: '5px', marginBottom: '60px', color: theme.accent }}>UNTIL OCTOBER 01 . 2026</p>
+              
+              <form onSubmit={handleRSVP} style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                <input required placeholder="YOUR NAME" style={{ background: 'none', border: 'none', borderBottom: `1px solid ${theme.accent}`, color: '#fff', padding: '20px', textAlign: 'center', fontSize: '1.2rem', outline: 'none' }} />
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '50px' }}>
+                  <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <input type="radio" name="att" required style={{ accentColor: theme.accent }} /> ATTENDING
+                  </label>
+                  <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <input type="radio" name="att" style={{ accentColor: theme.accent }} /> DECLINING
+                  </label>
+                </div>
+                <button type="submit" style={{ background: 'none', border: `1px solid ${theme.accent}`, color: theme.accent, padding: '20px 60px', alignSelf: 'center', cursor: 'pointer', letterSpacing: '3px', transition: '0.3s' }} onMouseOver={(e) => { e.target.style.backgroundColor = theme.accent; e.target.style.color = theme.bg; }} onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = theme.accent; }}>
+                  SUBMIT RESPONSE
+                </button>
+              </form>
+            </>
+          ) : (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: 'clamp(3rem, 10vw, 5rem)', color: theme.accent, marginBottom: '20px' }}>Thank You</h2>
+              <p style={{ fontSize: '1.2rem', letterSpacing: '3px', lineHeight: '1.6', maxWidth: '600px', margin: '0 auto' }}>
+                Your response has been received. <br />
+                We can’t wait to celebrate this special day with you!
+              </p>
+              <button onClick={() => setRsvpStatus('pending')} style={{ marginTop: '40px', background: 'none', border: 'none', color: theme.textMuted, textDecoration: 'underline', cursor: 'pointer', fontSize: '0.8rem', letterSpacing: '2px' }}>
+                EDIT RESPONSE
               </button>
-           </form>
+            </motion.div>
+          )}
         </div>
       </section>
 
