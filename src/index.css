@@ -1,0 +1,57 @@
+/* index.css */
+@font-face {
+  font-family: 'KugileDemo';
+  src: url('./Kugile_Demo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --bg: #0a0a0a; 
+  --text: #ffffff;
+  --text-h: #ffffff;
+  /* Updated border to your Champagne Gold accent */
+  --border: #c5a059; 
+  
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'KugileDemo', serif;
+
+  font: 18px/145% var(--sans);
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0a0a0a;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#root {
+  /* Set width back to a contained layout so the border is visible on the sides */
+  width: 1126px;
+  max-width: 95vw;
+  margin: 40px auto; /* Adds space at top/bottom so the gold frame is visible */
+  padding: 0;
+  
+  /* Apply the gold border */
+  border: 1px solid var(--border) !important;
+  background-color: #0a0a0a;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(197, 160, 89, 0.1); /* Subtle gold glow */
+}
+
+/* Ensure headings use the correct font and white color */
+h1, h2, h3 {
+  font-family: 'KugileDemo', serif;
+  color: #ffffff;
+  margin: 0;
+}
