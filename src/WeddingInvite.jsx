@@ -1,12 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-
 import weddingSong from './Wedding Song/Taylor Swift - Love Story.mp3';
 import suitExample from './Wedding Song/Men.png';
 import gownExample from './Wedding Song/Woman.png';
-import coupleImage from '/lukanaval.png';
-
+import coupleImage from '/lukanaval.png'; 
 
 function WeddingInvite() {
   const [hasEntered, setHasEntered] = useState(false);
@@ -184,7 +182,7 @@ function WeddingInvite() {
           {isPlaying ? 'SOUND ON' : 'SOUND OFF'}
         </div>
 
-        {/* SECTION 1: THE REVEAL (Hero with Background Image) */}
+        {/* SECTION 1: THE REVEAL */}
         <section style={{ 
           height: '100vh', 
           display: 'flex', 
@@ -194,12 +192,11 @@ function WeddingInvite() {
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* PHOTO BACKGROUND */}
           <div style={{
             position: 'absolute',
             top: 0,
             right: 0,
-            width: '40%', // Covers the right side
+            width: '40%',
             height: '130%',
             zIndex: 0,
             backgroundImage: `url(${coupleImage})`,
@@ -207,7 +204,6 @@ function WeddingInvite() {
             backgroundPosition: 'center',
             pointerEvents: 'none'
           }}>
-            {/* DARK GRADIENT OVERLAY */}
             <div style={{
               position: 'absolute',
               inset: 0,
@@ -215,7 +211,6 @@ function WeddingInvite() {
             }} />
           </div>
 
-          {/* TEXT CONTENT */}
           <motion.div 
             initial="hidden" 
             animate={hasEntered ? "visible" : "hidden"} 
@@ -241,11 +236,23 @@ function WeddingInvite() {
               <span style={{ color: theme.accent, fontSize: '0.8rem', letterSpacing: '4px' }}>01 / THE VOWS</span>
               <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: '4rem', margin: '40px 0' }}>San Agustin Church</h2>
               <p style={{ fontSize: '1.1rem', marginBottom: '40px' }}>Join us at 11:00 AM for the ceremony within the historic walls of Intramuros.</p>
+              {/* Corrected Map Link for San Agustin Church */}
+              <iframe 
+                title="San Agustin Church"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.168378414434!2d120.97298687590522!3d14.588358477341235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca16f3174241%3A0xc340b08006e00ec9!2sSan%20Agustin%20Church!5e0!3m2!1sen!2sph!4v1713430000000" 
+                width="100%" height="400" style={{ border: 0, filter: 'grayscale(1) invert(1)' }} allowFullScreen="" loading="lazy">
+              </iframe>
             </div>
             <div style={{ flex: '1 1 50%', padding: '150px 10% 0 10%' }}>
               <span style={{ color: theme.accent, fontSize: '0.8rem', letterSpacing: '4px' }}>02 / THE PARTY</span>
               <h2 style={{ fontFamily: "'KugileDemo', serif", fontSize: '4rem', margin: '40px 0' }}>VERA Intramuros</h2>
               <p style={{ fontSize: '1.1rem', marginBottom: '40px' }}>Celebration to follow at 06:00 PM. An evening of dinner, drinks, and dancing.</p>
+              {/* Corrected Map Link for VERA Intramuros */}
+              <iframe 
+                title="VERA Intramuros"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.1895311210877!2d120.97203387590526!3d14.58712217737059!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca3dc8e40001%3A0x8670188684784a0d!2sVERA%20Intramuros!5e0!3m2!1sen!2sph!4v1713430000000" 
+                width="100%" height="400" style={{ border: 0, filter: 'grayscale(1) invert(1)' }} allowFullScreen="" loading="lazy">
+              </iframe>
             </div>
           </div>
         </section>
