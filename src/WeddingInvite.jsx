@@ -8,7 +8,7 @@ import gownExample from './Wedding Song/Woman.png';
 
 function WeddingInvite() {
   // Set to true by default so the UI shows "SOUND ON" immediately
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [rsvpStatus, setRsvpStatus] = useState('pending');
   const audioRef = useRef(null);
 
@@ -24,10 +24,7 @@ function WeddingInvite() {
             setIsPlaying(true);
           })
           .catch((error) => {
-            /** * Browser blocked autoplay. 
-             * We keep isPlaying as true so the UI reflects the intent, 
-             * but the audio will actually start once the user interacts with the page.
-             */
+            setIsPlaying(false); // blocked by browser, reflect real state
             console.log("Audio waiting for user interaction to unmute.");
           });
       }
